@@ -17,4 +17,6 @@ public interface EmployeRepository extends
     @Query( value = "SELECT DISTINCT e.employee_function FROM Employee e",
     nativeQuery = true)
     List<String> findAllEmployeeFunction();
+    
+    public List<Employee> findAll();
 }

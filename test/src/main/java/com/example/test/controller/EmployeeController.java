@@ -1,5 +1,4 @@
 package com.example.test.controller;
-
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.test.model.Employee;
+import com.example.test.dto.EmployeeReqDto;
+import com.example.test.mapper.EmployeeMapper;
 import com.example.test.service.EmployeeService;
 
 @RestController
@@ -23,19 +22,28 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 	
+	@Autowired
+	private EmployeeMapper employeeMapper;
+	
 	@PostMapping
-	public ResponseEntity<?> save(@RequestBody Employee employee){
-		return ResponseEntity.ok(employeeService.save(employee));
+	public ResponseEntity<?> save(@RequestBody EmployeeReqDto employee){ 
+		return ResponseEntity.ok(
+		employeeMapper.entityForDto(
+		employeeService.save(employeeMapper.dtoForEntity(employee))));
 	}
 	
 	@GetMapping("{id}")
 	public ResponseEntity<?> find(@PathVariable(value = "id") Long id){
-		 return ResponseEntity.ok(employeeService.find(id));
+		 return ResponseEntity.ok(employeeMapper
+		.entityForDto(employeeService.find(id)));
 	}
 	
 	@PutMapping("{id}")
-	public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody Employee employee){
-		return ResponseEntity.ok(employeeService.update(id, employee));
+	public ResponseEntity<?> update(@PathVariable(value = "id") Long id, 
+	@RequestBody EmployeeReqDto employeeReq){
+	     return ResponseEntity.ok(employeeMapper
+	    .entityForDto(employeeService.update(id, employeeMapper
+	    .dtoForEntity(employeeReq))));
 	}
 	
 	@DeleteMapping("{id}")
@@ -59,6 +67,12 @@ public class EmployeeController {
 	@GetMapping("/employeefunction")
 	public ResponseEntity<?> findAll(){
 		return ResponseEntity.ok(employeeService.findALLEmployeeFunction());
+	}
+	
+	@GetMapping("/findALL")
+	public ResponseEntity<?> findAllEmployee(){
+		return ResponseEntity.ok(employeeMapper
+	   .allForDto(employeeService.findAll()));
 	}
 	
 }

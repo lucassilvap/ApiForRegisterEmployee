@@ -67,4 +67,8 @@ public class EmployeeService {
 		return employeRepository.findAllEmployeeFunction();
 	}
 	
+	public List<Employee> findAll(){
+		return employeRepository.findAll();
+	}
+	
 }
